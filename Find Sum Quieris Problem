@@ -1,0 +1,73 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Problem_Solving_CSharp
+{
+
+    class Program
+    {
+        public static List<long> findSum(List<int> numbers, List<List<int>> queries)
+        {
+            long sum = 0; int c = 0;
+            List<int> zerpos = new List<int>();
+            List<long> acc = new List<long>();
+            List<long> result = new List<long>();
+            for (int j = 0; j < numbers.Count; j++)
+            {
+                sum += numbers[j];
+                acc.Add(sum);
+                if (numbers[j] == 0)
+                    c++;
+                zerpos.Add(c);
+            }
+            for (int i = 0; i < queries.Count; i++)
+            {
+                int sidx = queries[i][0] - 1;
+                int eidx = queries[i][1] - 1;
+                int val = queries[i][2];
+                long res;
+                if (sidx == eidx)
+                {
+                    if (numbers[sidx] == 0)
+                        res = val;
+                    else
+                        res = numbers[sidx];
+                }
+                else if (sidx > 0)
+                    res = (acc[eidx] - acc[sidx]) + ((zerpos[eidx] - zerpos[sidx-1]) * val);
+                else
+                    res = acc[eidx] + (zerpos[eidx] * val);
+                result.Add(res);
+            }
+            return result;
+        }
+       
+        static void Main(string[] args)
+        {
+            List<List<int>> q = new List<List<int>>();
+            List<int> nu = new List<int>();
+            nu.Add(-5);
+            nu.Add(0);
+            nu.Add(10);//10
+            nu.Add(0);//30 as 0=20
+            nu.Add(5);//35
+            nu.Add(10);//45
+            nu.Add(15);//60
+            nu.Add(0);//80 as 0=20
+            q.Add(new List<int> { 2, 2, 20 });
+            q.Add(new List<int> { 2, 7, 20 });
+            List<long> r =  findSum(nu,q);
+            foreach (var item in r)
+            {
+                Console.WriteLine(item);
+            }
+            Console.ReadKey();
+        }
+
+    }
+}
